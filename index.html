@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suporte IA & Quati - Grupo Cataratas</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#00E676',
+                            forest: '#15803D',
+                            orange: '#F97316',
+                            dark: '#121110',
+                            card: '#1A1817',
+                            border: '#2A2725'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome Icons & Marked -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-brand-dark text-slate-100 h-screen w-screen font-sans flex flex-col md:flex-row overflow-hidden">
+
+    <!-- OVERLAY PARA FECHAR O MENU NO TELEMÓVEL -->
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+    <!-- SIDEBAR / MENU LATERAL RETRÁTIL NO MOBILE -->
+    <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 w-80 bg-brand-card border-r border-brand-border flex flex-col z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out h-full">
+        <!-- Header da Logo com Mascote Quati -->
+        <div class="p-4 border-b border-brand-border flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-forest via-brand-green to-brand-orange p-0.5">
+                    <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-infinity text-brand-green text-base"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-[10px] uppercase tracking-widest font-bold text-brand-green block">Grupo</span>
+                    <h1 class="text-base font-black tracking-tight text-white leading-none">CATARATAS</h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div id="quatiAvatarHeader" class="w-9 h-9 relative cursor-pointer rounded-xl overflow-hidden shadow-md border border-brand-border bg-brand-dark flex items-center justify-center">
+                    <img src="quati.jpg" alt="Quati" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/616/616408.png';">
+                </div>
+                <!-- Botão de Fechar no Telemóvel -->
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Perfil do Usuário Ativo -->
+        <div id="userProfileBadge" class="p-3 mx-4 mt-3 bg-brand-dark/60 border border-brand-border rounded-xl flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <i class="fa-solid fa-user-gear text-brand-green"></i>
+                <div class="truncate">
+                    <p id="badgeUserName" class="font-bold text-white truncate">Visitante</p>
+                    <p id="badgeUserDept" class="text-[10px] text-slate-400 truncate">Setor não informado</p>
+                </div>
+            </div>
+            <button onclick="openOnboardingModal()" class="text-slate-400 hover:text-brand-green p-1" title="Alterar perfil/idioma">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Atalhos Rápidos com 1-Clique -->
+        <div class="p-4 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-2 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-brand-orange"></i> Soluções Rápidas
+                </p>
+
+                <!-- Categoria TI & Acessos -->
+                <div class="mb-4">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase px-2 mb-1 block">TI & Acessos</span>
+                    <div class="space-y-1">
+                        <button onclick="sendQuickQuestion('Como redefinir a minha senha de acesso aos sistemas da empresa?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-key text-brand-green group-hover:scale-110 transition-transform"></i>
+                            Redefinição de Senha
+                        </button>
+                        <button onclick="sendQuickQuestion('Como conectar e configurar a VPN corporativa para trabalho remoto?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-network-wired text-brand-green group-hover:scale-110 transition-transform"></i>
+                            Acesso à VPN Corporativa
+                        </button>
+                        <button onclick="sendQuickQuestion('Como configurar o e-mail institucional no celular Android e iPhone?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-envelope text-brand-green group-hover:scale-110 transition-transform"></i>
+                            E-mail no Celular
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categoria Equipamentos -->
+                <div class="mb-4">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase px-2 mb-1 block">Equipamentos & Rede</span>
+                    <div class="space-y-1">
+                        <button onclick="sendQuickQuestion('Como mapear impressoras da rede no meu computador Windows?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-print text-brand-orange group-hover:scale-110 transition-transform"></i>
+                            Mapeamento de Impressora
+                        </button>
+                        <button onclick="sendQuickQuestion('O que fazer quando o computador está sem conexão com a internet ou Wi-Fi falhando?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-wifi text-brand-orange group-hover:scale-110 transition-transform"></i>
+                            Problemas com Wi-Fi/Internet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categoria RH -->
+                <div>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase px-2 mb-1 block">RH & Serviços</span>
+                    <div class="space-y-1">
+                        <button onclick="sendQuickQuestion('Qual é o passo a passo para enviar o comprovante de despesas e solicitar reembolso?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-file-invoice-dollar text-brand-green group-hover:scale-110 transition-transform"></i>
+                            Solicitação de Reembolso
+                        </button>
+                        <button onclick="sendQuickQuestion('Como consultar meu contracheque e folha de pagamento no portal do colaborador?')" 
+                                class="w-full text-left p-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-brand-border transition-all flex items-center gap-2 group">
+                            <i class="fa-solid fa-receipt text-brand-green group-hover:scale-110 transition-transform"></i>
+                            Consulta de Contracheque
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão de Status de Conexão -->
+        <div class="p-4 border-t border-brand-border">
+            <button onclick="openConfigModal()" class="w-full py-2 px-3 rounded-lg bg-brand-border hover:bg-slate-800 text-xs text-slate-300 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-key text-slate-400"></i> API Conectada Automática
+                </span>
+                <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-brand-green"></span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL DO CHAT -->
+    <main class="flex-1 flex flex-col h-full bg-brand-dark overflow-hidden relative">
+        <!-- Topo da Central -->
+        <header class="p-3.5 border-b border-brand-border flex items-center justify-between bg-brand-card/80 backdrop-blur-md z-10">
+            <div class="flex items-center gap-2.5">
+                <!-- Botão para Abrir Menu no Telemóvel -->
+                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg bg-brand-border text-brand-green hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-bars text-sm"></i>
+                </button>
+
+                <div class="w-2.5 h-2.5 rounded-full bg-brand-green animate-pulse"></div>
+                <div>
+                    <h2 class="text-xs md:text-sm font-bold text-white flex items-center gap-2">
+                        Assistente Quati
+                        <span id="headerLangBadge" class="text-[9px] md:text-[10px] px-2 py-0.5 rounded-full bg-brand-forest/40 text-brand-green border border-brand-green/30">🇧🇷 Português</span>
+                    </h2>
+                    <p class="text-[10px] text-slate-400 hidden sm:block">Primeiro atendimento com voz e suporte em múltiplos idiomas</p>
+                </div>
+            </div>
+            
+            <button onclick="openOnboardingModal()" class="text-xs text-slate-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-brand-border transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-globe"></i> <span class="hidden sm:inline">Trocar Idioma / Perfil</span>
+            </button>
+        </header>
+
+        <!-- Mensagens do Chat -->
+        <div id="chatContainer" class="flex-1 p-3 md:p-6 overflow-y-auto space-y-4 custom-scrollbar"></div>
+
+        <!-- Formulário de Envio -->
+        <div class="p-3 md:p-4 bg-brand-card/80 border-t border-brand-border">
+            <form id="chatForm" onsubmit="handleFormSubmit(event)" class="max-w-4xl mx-auto relative flex items-center">
+                <input type="text" 
+                       id="userInput" 
+                       placeholder="Digite sua dúvida aqui..." 
+                       class="w-full bg-brand-dark border border-brand-border rounded-xl py-3 pl-4 pr-12 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-green transition-all"
+                       required>
+                <button type="submit" 
+                        id="sendBtn"
+                        class="absolute right-2 w-8 h-8 rounded-lg bg-brand-green text-black font-bold flex items-center justify-center hover:opacity-90 transition-opacity">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- MODAL DE ONBOARDING -->
+    <div id="onboardingModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-5 w-full max-w-md space-y-4 animate-fade-in shadow-2xl">
+            <div class="flex items-center gap-3 border-b border-brand-border pb-3">
+                <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-brand-border bg-brand-dark flex items-center justify-center">
+                    <img src="quati.jpg" alt="Quati" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/616/616408.png';">
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white">Bem-vindo ao Suporte! 🦝</h3>
+                    <p class="text-[11px] text-slate-400">Preencha seus dados para iniciar o atendimento.</p>
+                </div>
+            </div>
+
+            <form onsubmit="saveOnboardingData(event)" class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-300 uppercase block mb-1">Seu Nome Completo *</label>
+                    <input type="text" id="onboardName" placeholder="Ex: Pedro Araújo" required
+                           class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-green">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-300 uppercase block mb-1">Seu Setor / Departamento *</label>
+                    <input type="text" id="onboardDept" placeholder="Ex: Operações, RH, Financeiro, TI" required
+                           class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-green">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-300 uppercase block mb-1">Idioma de Preferência *</label>
+                    <select id="onboardLang" required
+                            class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-green">
+                        <option value="pt-BR">🇧🇷 Português (Brasil)</option>
+                        <option value="en-US">🇺🇸 English (Inglês)</option>
+                        <option value="es-ES">🇪🇸 Español (Espanhol)</option>
+                        <option value="fr-FR">🇫🇷 Français (Francês)</option>
+                    </select>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-2.5 bg-brand-green text-black font-bold text-xs rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-comments"></i> Iniciar Atendimento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURAÇÃO DE API -->
+    <div id="configModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-5 w-full max-w-md space-y-4">
+            <div class="flex items-center justify-between border-b border-brand-border pb-3">
+                <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-brand-orange"></i> Configuração da API Gemini
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <p class="text-xs text-slate-300">A API está autenticada e configurada automaticamente.</p>
+
+            <div class="space-y-1">
+                <label class="text-[10px] text-slate-400 font-semibold uppercase">Gemini API Key</label>
+                <input type="password" id="apiKeyInput" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-green">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeConfigModal()" class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-brand-border">Cancelar</button>
+                <button onclick="saveApiKey()" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-brand-green text-black hover:opacity-90">Salvar Alteração</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Principal -->
+    <script src="script.js"></script>
+</body>
+</html>

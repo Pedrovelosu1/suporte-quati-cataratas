@@ -1,0 +1,41 @@
+/* Scrollbar Customizada */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #2A2725;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #15803D;
+}
+
+/* Animação do Avatar ao Falar */
+.quati-talking {
+    animation: quatiPulse 0.3s infinite alternate ease-in-out;
+    border-color: #00E676 !important;
+}
+
+@keyframes quatiPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+}
+
+/* Formatação de Mensagens Markdown */
+.markdown-body p {
+    margin-bottom: 0.5rem;
+}
+.markdown-body ul, .markdown-body ol {
+    margin-left: 1.25rem;
+    margin-bottom: 0.5rem;
+    list-style-type: disc;
+}
+.markdown-body code {
+    background-color: #2A2725;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    font-size: 0.8em;
+}
